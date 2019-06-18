@@ -268,7 +268,85 @@ oneToTenMultTableModified = [ [ x * y | y <- [1..x] ] | x <- [1..10] ]
 
 {-
 	Tuples are collections of random stuff
-	We usually prefer to have 2-sized tuples
+	We usually prefer to have 2-sized tuples, which can be accessed easily
+	Multiple sized tuples can not be accessed like this
 -}
 
 tuple1 = (1, 'A', "Eeshan", 'b', -3.14)
+
+-- Two-sized tuples can be accessed by special commands 'fst', 'snd'
+tuple2 = ("Eeshan", 25)
+firstOfTuple1 = fst tuple2
+secondOfTuple1 = snd tuple2
+
+
+{-
+	Simple functions in the Haskell compiler ghc:
+	let multiplyBy7 x = x * 7 -- This is how the function is defined inline
+	let valX = 3
+	multiplyBy7 valX -- Outputs 21
+-}
+
+
+{-
+	We can write the main function, which chains all the inside stuff
+	It is then automatically executed
+	It needs to start with a "main = do"
+-}
+
+
+{-
+	The ":t" that we dud inside the console was a type-declaration
+	We can define a type by listing out the following:
+	The types of the arguments that it inputs and the type of THE output
+	The function definition is: <fn_name> <arg_1> ... <arg_n> = <processing>
+-}
+
+-- A new type 'addMe'. First two 'Int' represent types of 2 int inputs and the last is int output
+addMe :: Int -> Int -> Int
+-- After defining the type, we can define the function itself
+addMe x y = x + y
+-- Now, ":t addMe" in compiler works: "addMe :: Int -> Int -> Int"
+-- We can do "addMe 3 4" in the compiler to get the answer of 7
+
+
+{-
+	However, type declaration is not required
+	If we are clear in the definition, the type inference is going to be automatic
+-}
+
+sumMe x y = x + y
+-- Now, "sumMe 3.14 (-1.14)" gives 2.0. Thus, the definition only works
+-- The automatic type inference is there: ":t sumMe" gives "sumMe :: Num a => a -> a -> a"
+
+
+{-
+	We can declare types that are more complex
+-}
+
+add2DVectors :: (Double, Double) -> (Double, Double) -> (Double, Double)
+add2DVectors (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+-- "add2DVectors (1, 2) (3, 4)" leads to "(4.0,6.0)"
+
+
+{-
+	We can perform if-else and switch with types!
+-}
+
+messager :: Int -> String
+
+messager 16 = "You can drive"
+messager 18 = "You can vote"
+messager 21 = "You can drink"
+messager _ = "Nothing special"
+
+
+{-
+	Recursion in Haskell
+-}
+
+-- type-declaration (for the sake of completeness and safe-code)
+factorialType :: Int -> Int
+factorialType 0 = 1 -- Base case
+factorialType n = n*factorialType(n - 1) -- Recursion
+-- It does not confuse that when 0 is passed, it does not perform 0*factorialType(-1)
