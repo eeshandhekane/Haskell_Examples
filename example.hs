@@ -423,3 +423,111 @@ listOfNumbersExample (x:xRest) = "The first item is: " ++ show x ++ " and the re
 getFirstItemFromString :: String -> String
 getFirstItemFromString [] = "The string is empty!"
 getFirstItemFromString everything@(x:xRest) = "The string <" ++ everything ++ "> starts with " ++ show x ++ " and the rest is " ++ show xRest
+
+
+
+{-
+	Higher order functions can be composed with maps
+	Higher order functions involves passing of functions as examples
+-}
+
+-- 'map' allows application of a function to all items of a list
+multBy7 x = x * 7
+tableOf7 = map multBy7 [1..10]
+
+-- Making a map
+multBy7Map :: [Int] -> [Int]
+multBy7Map [] = []
+multBy7Map (x:xRest) = multBy7 x : multBy7Map(xRest) -- ':' represents list concatenation
+
+
+{-
+	Strings can be considered as the list of characters
+-}
+
+-- Type-declaration
+areStringsEqual :: [Char] -> [Char] -> Bool
+areStringsEqual [] [] = True -- Base case
+areStringsEqual (x1:x1Rest) (x2:x2Rest) = x1 == x2 && areStringsEqual x1Rest x2Rest
+areStringsEqual _ _ = False -- Default
+
+
+{-
+	We can pass functions as arguments to another function!
+	It is quite clear that how this can be done--
+	We just need to parenthesize the correct types!
+-}
+
+-- A function that inputs a function that does the multiplication
+-- Define the function that needs to be passed
+multiplyBy11Fn :: Int -> Int
+multiplyBy11Fn x = x*11
+-- Define the complex function: It inputs a function that multiplies by 11 and the number to be multiplied with 11
+doMultiplication :: (Int -> Int) -> Int
+doMultiplication x = x 3 -- We want to multiply 3 with the function
+-- Store the result
+multiply3With11 = doMultiplication multiplyBy11Fn
+
+
+{-
+	Haskell also allows to return a function
+	We just need to have the correct type-declaration for the inpts and the outputs
+-}
+
+-- We want to input an integer x and obtain a function that adds x to every input
+getFunctionToAddX :: Int -> (Int -> Int)
+-- Define a function to add a particular number to the input
+getFunctionToAddXAndY x y = x + y
+getFunctionToAddX x = getFunctionToAddXAndY x -- The trick is to define the total function and pass insufficient arguments!
+-- Get a function to add 3
+getFunctionToAdd3 = getFunctionToAddX 3
+threeAddedToFour = getFunctionToAdd3 4 -- Outputs 7!
+
+-- We can further map this function onto a list in order to extend it with map
+add3ToList = map getFunctionToAdd3 [1..10]
+
+
+{-
+	Lambda's are functions with no-name!
+	A lambda is defined inside the parentheses using dummy variable with a /
+	Thus, an example is "(\x -> x**2)" for a lambda function for squaring
+-}
+
+-- Define a lambda
+lambdaDoubleX = (\x -> x*2)
+-- Map a lambda
+double1To10 = map lambdaDoubleX [1..10]
+
+
+{-
+	The comparison/logical operators: >, <, ==, <=, >=, /= (not equal)
+	'if' is available in Haskell, even tbough it is not used that much
+	'if' has to have an 'else' and has the format: "if <condition> then <statements1> else <statements2>"
+-}
+
+-- Double only even numbers
+doubleEvenNums :: Int -> Int
+doubleEvenNums x = if (x `mod` 2 == 0) then x * 2 else x
+doubleEvenNumsFrom1To10 = map doubleEvenNums [1..10]
+
+
+{-
+	We can also write 'switch' cases in Haskell
+	A switch case has the format: "case <switch_var> of <val_1> -> <statements_1> <val_2> -> <statements_2> ..." 
+-}
+
+-- Get the class
+getClass :: Int -> String
+getClass n = case n of
+	5 -> "Small"
+	6 -> "Medium"
+	_ -> "Big" -- default
+
+
+{-
+	Modules contain functions and can be included with 'import'
+	At the top of this file, add the line--
+	"module <module_name> (<fn_1>, <fn_2>, ...) where <definition_fn_1> <definition_fn_2> ..."
+	In the current file, we add the line--	
+	"import <module_name>"
+-}
