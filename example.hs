@@ -350,3 +350,76 @@ factorialType :: Int -> Int
 factorialType 0 = 1 -- Base case
 factorialType n = n*factorialType(n - 1) -- Recursion
 -- It does not confuse that when 0 is passed, it does not perform 0*factorialType(-1)
+
+-- Non-recursion way is to perform product for n >= 1
+recursion1 n = foldl (*) 1 [1..n]
+recursion2 n = foldr (*) 1 [1..n]
+recursion3 n = product [1..n]
+
+
+{-
+	We need to have branching based on the inputs
+	The earlier if-else and switch were not viable for inputs and conditions on it
+	This is achieved via 'Guards'
+	Guards hold conditions that can be combined
+-}
+
+-- Define odd/even type-declaration
+isEven :: Int -> Bool
+-- Define the function
+isEven n
+	| n `mod` 2 == 0 = True
+	| n `mod` 2 == 1 = False
+
+-- We can define with 'otherwise'
+isOdd :: Int -> Bool
+isOdd n 
+	| n `mod` 2 == 1 = True
+	| otherwise = False
+
+-- Shortened versions without guards
+isEvenShort n = n `mod` 2 == 0
+isOddShort n = n `mod` 2 == 1
+
+-- Schooling
+getSchoolSystem :: Int -> String
+getSchoolSystem n
+	| n > 5 && n < 7 = "Go to Kindergarten"
+	| otherwise = "Go to college"
+
+ 
+{-
+	Guards are evaluated from the top to the bottom
+	Thus, we can write exclusive guards that act as exclusive else-if
+	We can use auxiliary variables for the guards with 'while' clause
+-}
+
+-- Calculate K/D ratio of CSGO!
+calculateKDRatio :: Double -> Double -> String
+calculateKDRatio kills deaths
+	| ration < 1 = "Okay"
+	| ration < 1.5 = "Good"
+	| otherwise = "Excellent"
+	where ration = (kills)/(deaths + 0.001) -- It MUST be 0.001, not .001
+
+
+{-
+	The types of listed items for type-declaration are as follows
+-}
+
+-- Get a list of ints and show messages
+listOfNumbersExample :: [Int] -> String
+listOfNumbersExample [] = "The list is empty!"
+listOfNumbersExample (x:[]) = "The list is a singleton with entry " ++ show x -- 'show' converts anything to String
+listOfNumbersExample (x:y:[]) = "The list has two entries: " ++ show x ++ " and " ++ show y
+listOfNumbersExample (x:xRest) = "The first item is: " ++ show x ++ " and the rest is:\n" ++ listOfNumbersExample xRest
+
+
+{-
+	The 'as' pattern is another option, which allows to capture certain patterns
+-}
+
+-- Get first item from a string
+getFirstItemFromString :: String -> String
+getFirstItemFromString [] = "The string is empty!"
+getFirstItemFromString everything@(x:xRest) = "The string <" ++ everything ++ "> starts with " ++ show x ++ " and the rest is " ++ show xRest
