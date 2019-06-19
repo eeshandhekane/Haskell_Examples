@@ -531,3 +531,189 @@ getClass n = case n of
 	In the current file, we add the line--	
 	"import <module_name>"
 -}
+
+
+{-
+	We can also create enumerated-type, which is a list of possible types
+-}
+
+-- This is achieved by creating data
+data FootballPlayer = 	Attacker 
+					|	Midfielder
+					|	Defender
+					|	Goalkeeper
+					deriving Show
+
+-- Now, we can create a type-declaration that can take values from above
+christianoRonaldo :: FootballPlayer -> Bool
+christianoRonaldo Attacker = True
+christianoRonaldo _ = False
+-- In compiler, we get "christianoRonaldo Attacker"->"True", "christianoRonaldo Midfielder"->"False", "christianoRonaldo Defender"->"False", "christianoRonaldo Goalkeeper"->"False"
+
+
+{-
+	Haskell allows for custom data-types, the types with different values
+	It is similar to structs
+-}
+
+-- Define a customer type with name (String), address (String) and balance (Double)
+data Customer = Customer String String Double
+	deriving Show
+
+eeshanDhekane :: Customer
+eeshanDhekane = Customer "Eeshan Gunesh Dhekane" "3239, Av. Appleton" 20.00
+
+-- Type-declare functions to get the name of the customer
+getCustomerName :: Customer -> String
+getCustomerAddress :: Customer -> String
+getCustomerBalance :: Customer -> Double
+
+-- Definition of the functions in a clever manner! We need to specify the customer, right!?
+getCustomerName (Customer name _ _) = name
+getCustomerAddress (Customer _ address _) = address
+getCustomerBalance (Customer _ _ balance) = balance
+
+-- Example
+eeshanName = getCustomerName eeshanDhekane
+eeshanAddress = getCustomerAddress eeshanDhekane
+eeshanBalance = getCustomerBalance eeshanDhekane
+
+
+{-
+	Multiple versions of a type can also be achieved
+-}
+
+-- Define a shape
+data Shape = Circle Float Float Float | Rectangle Float Float Float Float
+	deriving Show
+
+-- Define type-declaration for a function that compute the area of the shape
+areaOfShape :: Shape -> Float
+areaOfShape (Circle _ _ radius) = pi * radius ** 2
+areaOfShape (Rectangle x1 y1 x2 y2) = ( abs (x2 - x1) )*( abs (y2 - y1) )
+-- areaOfShape (Rectangle x1 y1 x2 y2) = ( abs $ x2 - x1 )*( abs $ y2 - y1 ) -- '$' is also used
+
+rectangleEx = Rectangle 1 2 3 5
+circleEx = Circle 1 2 3
+areaOfRectangleEx = areaOfShape rectangleEx
+areaOfCircleShape = areaOfShape circleEx
+
+
+{-
+	'.' operator allows chaining of functions, as in the usual COMPOSITION
+	Also, '$' replaces lots of brackets
+-}
+
+-- Display 1 + 2
+sumVal = putStrLn ( show (1 + 2) ) -- or, putStrLn ( show $ 1 + 2 )-- The content to the right of '$' is calculated first
+-- OR, with '.' operator, we have--
+sumValAnother = putStrLn . show $ 1 + 2
+
+
+{-
+	Type-classes: Num, Show etc. are examples
+	They correspond to sets of types with pre-defined operations
+-}
+
+-- Create a custom data type
+data Employee = Employee {
+	name :: String,
+	position :: String,
+	idNumber :: Int
+} deriving (Eq, Show) -- We want to check equality and show the employees.
+
+-- Create examples
+eeshanDhekaneEmployee = Employee {name = "Eeshan", position = "Researcher", idNumber = 10}
+eeshanDhekaneEmployeeClone = Employee {name = "Eeshan", position = "Researcher", idNumber = 10}
+sourishDhekaneEmployee = Employee {name = "Sourish", position = "Researcher/Scientist", idNumber = 11}
+
+-- Check equality
+isEeshanEqualToEeshanClone = eeshanDhekaneEmployee == eeshanDhekaneEmployeeClone
+isEeshanEqualToSourish = eeshanDhekaneEmployee == sourishDhekaneEmployee
+
+-- Show data!
+eeshanData = show eeshanDhekaneEmployee
+sourishData = show sourishDhekaneEmployee
+
+-- Create data type
+data OfficeSize = S | M | L -- 'officeHead' is malformed! 
+
+-- We can override the equality
+instance Eq OfficeSize where
+	S == S = True
+	M == M = True
+	L == L = True
+	_ == _ = False
+
+-- We can override the show
+instance Show OfficeSize where
+	show S = "The office size is small"
+	show M = "The office size is medium"
+	show L = "The office size is large"
+
+-- Examples 
+isSmallOfficeAvailable = S `elem` [S, L, M] -- `elem` checks if the entry is an instance of the list
+office1 = show S
+office2 = show L
+office3 = show M
+
+
+{-
+	Classes: We can define our own class
+-}
+
+-- Define an equality class by our own
+class MyEqual a where
+
+	-- 'a' is any type that implements 'areEqual'
+	areEqual :: a -> a -> Bool
+
+-- Create an instance of MyEqual inside OfficeSize
+instance MyEqual OfficeSize where
+	areEqual S S = True 
+	areEqual L L = True 
+	areEqual M M = True 
+	areEqual _ _ = False 
+
+isMEqualToMUnderMyEqual = areEqual M M
+isSEqualToMUnderMyEqual = areEqual S M
+
+
+{-
+	IO allows us to input/output
+	We will use 'do' that allows chaining
+-}
+
+dialogueFunction = do
+	putStrLn "What is your name?"
+	name <- getLine
+	putStrLn ("Hello " ++ show name ++ "!")
+
+-- In compiler, run this function!
+
+-- To write to a file
+writeToAFileFunction = do
+	theFile <- openFile	"WriteFile.txt" WriteMode
+	putStrLn "What is your name?"
+	name <- getLine
+	putStrLn ("Hello " ++ show name ++ "!")
+	hPutStrLn theFile ("Example of content written to the file")
+	hPutStrLn theFile ("Hello " ++ show name ++ "!")
+	hClose theFile
+
+-- To read a file
+readFromAFileFunction = do
+	theFile <- openFile "WriteFile.txt" ReadMode
+	contents <- hGetContents theFile
+	putStrLn contents
+	hClose theFile
+
+
+{-
+	Example: Fibonacci Sequence
+-}
+
+aList = 1:2:3:4:[]
+tailOfAList = tail aList
+fibonacciSequence = 1 : 1 : [a + b | (a, b) <- zip fibonacciSequence (tail fibonacciSequence)]
+first10FibonacciNumbers = take 10 fibonacciSequence
